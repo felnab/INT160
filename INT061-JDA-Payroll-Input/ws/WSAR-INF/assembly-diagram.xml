@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wdnm:Diagram xmlns:wdnm="http://workday.com/studio/editors/notation">
+  <element href="assembly.xml#WorkdayAssembly"/>
+  <visualProperties x="-244" y="105">
+    <element href="assembly.xml#StartHere"/>
+  </visualProperties>
+  <visualProperties x="492" y="244">
+    <element href="assembly.xml#TransformData"/>
+  </visualProperties>
+  <visualProperties x="-243" y="748">
+    <element href="assembly.xml#Splitter"/>
+  </visualProperties>
+  <visualProperties x="-67" y="770">
+    <element href="assembly.xml#Evaluation"/>
+  </visualProperties>
+  <visualProperties x="-233" y="1222">
+    <element href="assembly.xml#WSCallType"/>
+  </visualProperties>
+  <visualProperties x="-2" y="1311">
+    <element href="assembly.xml#Hours"/>
+  </visualProperties>
+  <visualProperties x="427" y="1247">
+    <element href="assembly.xml#RegWS"/>
+  </visualProperties>
+  <visualProperties x="6" y="1198">
+    <element href="assembly.xml#Amount"/>
+  </visualProperties>
+  <visualProperties x="-22" y="1557">
+    <element href="assembly.xml#Off_Hours"/>
+  </visualProperties>
+  <visualProperties x="-19" y="1449">
+    <element href="assembly.xml#Off_Amount"/>
+  </visualProperties>
+  <visualProperties x="290" y="71">
+    <element href="assembly.xml#RouteFiles"/>
+  </visualProperties>
+  <visualProperties x="816" y="188">
+    <element href="assembly.xml#TransformedData"/>
+  </visualProperties>
+  <visualProperties x="-260" y="688">
+    <element href="assembly.xml#LoopData"/>
+  </visualProperties>
+  <visualProperties x="648" y="839">
+    <element href="assembly.xml#CallSubRoutine"/>
+  </visualProperties>
+  <visualProperties x="-253" y="1175">
+    <element href="assembly.xml#SubRoutine"/>
+  </visualProperties>
+  <visualProperties x="-2" y="6">
+    <element href="assembly.xml#//@beans/@mixed.1/@mixed.31"/>
+  </visualProperties>
+  <visualProperties x="303" y="6">
+    <element href="assembly.xml#Note-Error"/>
+  </visualProperties>
+  <visualProperties x="75" y="543">
+    <element href="assembly.xml#HashWS"/>
+  </visualProperties>
+  <visualProperties x="45" y="433">
+    <element href="assembly.xml#HashEvalInt"/>
+  </visualProperties>
+  <visualProperties x="290" y="418">
+    <element href="assembly.xml#SplitFile"/>
+  </visualProperties>
+  <visualProperties x="528" y="433">
+    <element href="assembly.xml#HashEval"/>
+  </visualProperties>
+  <visualProperties x="30" y="60">
+    <element href="assembly.xml#Call_Build_Hash_Table"/>
+  </visualProperties>
+  <visualProperties x="-249" y="480">
+    <element href="assembly.xml#Hash_Map"/>
+  </visualProperties>
+  <visualProperties x="266" y="647">
+    <element href="assembly.xml#TM_Position"/>
+  </visualProperties>
+  <visualProperties x="509" y="658">
+    <element href="assembly.xml#Position"/>
+  </visualProperties>
+  <visualProperties x="492" y="776">
+    <element href="assembly.xml#Position1"/>
+  </visualProperties>
+  <visualProperties x="492" y="891">
+    <element href="assembly.xml#Position2"/>
+  </visualProperties>
+  <visualProperties x="-126" y="160">
+    <element href="assembly.xml#LogStoreFile"/>
+  </visualProperties>
+  <visualProperties x="386" y="1332">
+    <element href="assembly.xml#AsyncMediation1"/>
+  </visualProperties>
+  <visualProperties x="850" y="209">
+    <element href="assembly.xml#done"/>
+  </visualProperties>
+  <visualProperties x="-40" y="939">
+    <element href="assembly.xml#HashError"/>
+  </visualProperties>
+  <visualProperties x="195" y="1222">
+    <element href="assembly.xml#RegWSCall"/>
+  </visualProperties>
+  <visualProperties x="826" y="365">
+    <element href="assembly.xml#TransferError"/>
+  </visualProperties>
+  <visualProperties x="831" y="303">
+    <element href="assembly.xml#Errors"/>
+  </visualProperties>
+  <visualProperties x="650" y="1235">
+    <element href="assembly.xml#WSRegSucess"/>
+  </visualProperties>
+  <visualProperties x="648" y="1557">
+    <element href="assembly.xml#OffWS"/>
+  </visualProperties>
+  <visualProperties x="266" y="1557">
+    <element href="assembly.xml#OffWSStatus"/>
+  </visualProperties>
+  <visualProperties x="835" y="1532">
+    <element href="assembly.xml#StatusWS"/>
+  </visualProperties>
+  <visualProperties x="840" y="1551">
+    <element href="assembly.xml#OffStatusVar"/>
+  </visualProperties>
+  <visualProperties x="828" y="1287">
+    <element href="assembly.xml#WSStatus"/>
+  </visualProperties>
+  <visualProperties x="888" y="1560">
+    <element href="assembly.xml#WSOffError5"/>
+  </visualProperties>
+  <visualProperties x="468" y="1929">
+    <element href="assembly.xml#WSOffSuccess"/>
+  </visualProperties>
+  <visualProperties x="475" y="1500">
+    <element href="assembly.xml#WSOffError4"/>
+  </visualProperties>
+  <visualProperties x="263" y="1449">
+    <element href="assembly.xml#CallCollate"/>
+  </visualProperties>
+  <visualProperties x="486" y="1449">
+    <element href="assembly.xml#CallAggregate0"/>
+  </visualProperties>
+  <visualProperties x="660" y="1933">
+    <element href="assembly.xml#Aggregate"/>
+  </visualProperties>
+  <visualProperties x="705" y="1394">
+    <element href="assembly.xml#Off_Hours00"/>
+  </visualProperties>
+  <visualProperties x="-82" y="658">
+    <element href="assembly.xml#AsyncMediation"/>
+  </visualProperties>
+  <visualProperties x="776" y="1905">
+    <element href="assembly.xml#AsyncMediation10"/>
+  </visualProperties>
+  <visualProperties x="748" y="1705">
+    <element href="assembly.xml#CallCollateAfterAggregate"/>
+  </visualProperties>
+  <visualProperties x="840" y="1905">
+    <element href="assembly.xml#Aggregator"/>
+  </visualProperties>
+  <visualProperties x="826" y="1542">
+    <element href="assembly.xml#AsyncMediation0"/>
+  </visualProperties>
+  <visualProperties x="817" y="2037">
+    <element href="assembly.xml#Splitter0"/>
+  </visualProperties>
+  <visualProperties x="959" y="2067">
+    <element href="assembly.xml#WSOffError50"/>
+  </visualProperties>
+  <visualProperties x="655" y="2130">
+    <element href="assembly.xml#ParseErrors"/>
+  </visualProperties>
+  <visualProperties x="852" y="1889">
+    <element href="assembly.xml#CallParseErrors"/>
+  </visualProperties>
+  <visualProperties x="1105" y="1761">
+    <element href="assembly.xml#AsyncMediation2"/>
+  </visualProperties>
+  <visualProperties x="2948" y="2163">
+    <element href="assembly.xml#WSOffSuccess00"/>
+  </visualProperties>
+  <visualProperties x="948" y="1760">
+    <element href="assembly.xml#CallGenerateWS"/>
+  </visualProperties>
+  <visualProperties x="73" y="2338">
+    <element href="assembly.xml#GenerateWS"/>
+  </visualProperties>
+  <visualProperties x="49" y="1887">
+    <element href="assembly.xml#AsyncMediation3"/>
+  </visualProperties>
+  <visualProperties x="10" y="1757">
+    <element href="assembly.xml#CallGenerateWS0"/>
+  </visualProperties>
+  <visualProperties x="1992" y="2372">
+    <element href="assembly.xml#AsyncMediation4"/>
+  </visualProperties>
+  <visualProperties x="2388" y="2372">
+    <element href="assembly.xml#CallCollate0"/>
+  </visualProperties>
+  <visualProperties x="2756" y="2372">
+    <element href="assembly.xml#CallCollate00"/>
+  </visualProperties>
+  <visualProperties x="421" y="3086">
+    <element href="assembly.xml#AsyncMediation5"/>
+  </visualProperties>
+  <visualProperties x="2265" y="2797">
+    <element href="assembly.xml#AsyncMediationXSLT"/>
+  </visualProperties>
+  <connections type="routesTo">
+    <source href="assembly.xml#//@beans/@mixed.1/@splitter.0/@subRoute.0"/>
+    <target href="assembly.xml#Evaluation"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.97" sourceAnchorY="0.35294117647058826" targetAnchorX="0.24456521739130435" targetAnchorY="0.07142857142857142">
+    <source href="assembly.xml#//@beans/@mixed.1/@route.0/@subRoute.1"/>
+    <target href="assembly.xml#Hours"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.96" sourceAnchorY="0.3235294117647059" targetAnchorX="0.21195652173913043" targetAnchorY="0.16326530612244897">
+    <source href="assembly.xml#//@beans/@mixed.1/@route.0/@subRoute.0"/>
+    <target href="assembly.xml#Amount"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.2755102040816326" targetAnchorX="0.2422680412371134" targetAnchorY="0.43243243243243246">
+    <source href="assembly.xml#HashEvalInt"/>
+    <target href="assembly.xml#HashWS"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.5798319327731093" sourceAnchorY="1.0" targetAnchorX="0.20786516853932585" targetAnchorY="0.5408163265306123">
+    <source href="assembly.xml#//@beans/@mixed.1/@splitter.1/@subRoute.0"/>
+    <target href="assembly.xml#HashEval"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.9316239316239316" sourceAnchorY="0.1891891891891892" targetAnchorX="0.31547619047619047" targetAnchorY="0.40816326530612246">
+    <source href="assembly.xml#Hash_Map"/>
+    <target href="assembly.xml#HashEvalInt"/>
+  </connections>
+  <connections type="routesResponseTo" sourceAnchorX="0.6907216494845361" sourceAnchorY="1.0" targetAnchorX="0.2196969696969697" targetAnchorY="0.40229885057471265">
+    <source href="assembly.xml#HashWS"/>
+    <target href="assembly.xml#SplitFile"/>
+  </connections>
+  <connections type="routesTo">
+    <source href="assembly.xml#//@beans/@mixed.1/@route.2/@subRoute.0"/>
+    <target href="assembly.xml#Position"/>
+  </connections>
+  <connections type="routesTo">
+    <source href="assembly.xml#//@beans/@mixed.1/@route.2/@subRoute.1"/>
+    <target href="assembly.xml#Position1"/>
+  </connections>
+  <connections type="routesTo">
+    <source href="assembly.xml#//@beans/@mixed.1/@route.2/@subRoute.2"/>
+    <target href="assembly.xml#Position2"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.8936170212765957" sourceAnchorY="0.0851063829787234" targetAnchorX="0.18681318681318682" targetAnchorY="0.4864864864864865">
+    <source href="assembly.xml#Position1"/>
+    <target href="assembly.xml#CallSubRoutine"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.9787234042553191" sourceAnchorY="0.031914893617021274" targetAnchorX="0.15934065934065933" targetAnchorY="0.5405405405405406">
+    <source href="assembly.xml#Position2"/>
+    <target href="assembly.xml#CallSubRoutine"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.12244897959183673" targetAnchorX="0.08181818181818182" targetAnchorY="0.05970149253731343">
+    <source href="assembly.xml#Evaluation"/>
+    <target href="assembly.xml#TM_Position"/>
+  </connections>
+  <connections type="routesTo">
+    <source href="assembly.xml#//@beans/@mixed.1/@route.0/@subRoute.2"/>
+    <target href="assembly.xml#Off_Amount"/>
+  </connections>
+  <connections type="routesTo">
+    <source href="assembly.xml#//@beans/@mixed.1/@route.0/@subRoute.3"/>
+    <target href="assembly.xml#Off_Hours"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.944954128440367" sourceAnchorY="0.40540540540540543" targetAnchorX="0.040983606557377046" targetAnchorY="0.05921052631578947">
+    <source href="assembly.xml#StartHere"/>
+    <target href="assembly.xml#LogStoreFile"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.3176895306859206" sourceAnchorY="1.0" targetAnchorX="0.5373134328358209" targetAnchorY="0.05434782608695652">
+    <source href="assembly.xml#//@beans/@mixed.1/@mixed.7/@mixed.3"/>
+    <target href="assembly.xml#HashError"/>
+  </connections>
+  <connections type="routesResponseTo" sourceAnchorX="1.0" sourceAnchorY="0.17763157894736842" targetAnchorX="0.4470588235294118" targetAnchorY="0.32432432432432434">
+    <source href="assembly.xml#LogStoreFile"/>
+    <target href="assembly.xml#done"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.5511811023622047" sourceAnchorY="1.0" targetAnchorX="0.6716417910447762" targetAnchorY="0.09574468085106383">
+    <source href="assembly.xml#//@beans/@mixed.1/@mixed.63/@mixed.3"/>
+    <target href="assembly.xml#AsyncMediation1"/>
+  </connections>
+  <connections type="routesResponseTo" sourceAnchorX="0.6588235294117647" sourceAnchorY="1.0" targetAnchorX="0.6923076923076923" targetAnchorY="0.3783783783783784">
+    <source href="assembly.xml#done"/>
+    <target href="assembly.xml#Errors"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.15081967213114755" sourceAnchorY="0.9333333333333333" targetAnchorX="0.4260869565217391" targetAnchorY="0.02127659574468085">
+    <source href="assembly.xml#//@beans/@mixed.1/@mixed.3/@mixed.3"/>
+    <target href="assembly.xml#TransferError"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.7615894039735099" sourceAnchorY="1.0" targetAnchorX="0.5285714285714286" targetAnchorY="0.018867924528301886">
+    <source href="assembly.xml#SubRoutine"/>
+    <target href="assembly.xml#WSCallType"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.29591836734693877" targetAnchorX="0.1404494382022472" targetAnchorY="0.17073170731707318">
+    <source href="assembly.xml#Amount"/>
+    <target href="assembly.xml#RegWSCall"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.9707602339181286" sourceAnchorY="0.1595744680851064" targetAnchorX="0.018867924528301886" targetAnchorY="0.2032520325203252">
+    <source href="assembly.xml#Hours"/>
+    <target href="assembly.xml#RegWSCall"/>
+  </connections>
+  <connections type="routesResponseTo" sourceAnchorX="0.7839195979899497" sourceAnchorY="1.0" targetAnchorX="0.4101123595505618" targetAnchorY="0.010869565217391304">
+    <source href="assembly.xml#RegWS"/>
+    <target href="assembly.xml#WSRegSucess"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.2755102040816326" targetAnchorX="0.15384615384615385" targetAnchorY="0.10810810810810811">
+    <source href="assembly.xml#Position"/>
+    <target href="assembly.xml#CallSubRoutine"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.453781512605042" sourceAnchorY="1.0" targetAnchorX="0.08099688473520249" targetAnchorY="0.11627906976744186">
+    <source href="assembly.xml#//@beans/@mixed.1/@route.1/@subRoute.0"/>
+    <target href="assembly.xml#TransformData"/>
+  </connections>
+  <connections type="routesResponseTo" sourceAnchorX="0.7582417582417582" sourceAnchorY="0.6486486486486487" targetAnchorX="0.48314606741573035" targetAnchorY="0.34782608695652173">
+    <source href="assembly.xml#OffWS"/>
+    <target href="assembly.xml#OffWSStatus"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.17346938775510204" targetAnchorX="0.46411483253588515" targetAnchorY="0.02702702702702703">
+    <source href="assembly.xml#OffWSStatus"/>
+    <target href="assembly.xml#StatusWS"/>
+  </connections>
+  <connections type="routesResponseTo" sourceAnchorX="0.8198198198198198" sourceAnchorY="0.5675675675675675" targetAnchorX="0.01834862385321101" targetAnchorY="0.26595744680851063">
+    <source href="assembly.xml#StatusWS"/>
+    <target href="assembly.xml#OffStatusVar"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.5337078651685393" sourceAnchorY="1.0" targetAnchorX="0.11029411764705882" targetAnchorY="0.05">
+    <source href="assembly.xml#OffStatusVar"/>
+    <target href="assembly.xml#WSStatus"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" targetAnchorX="0.008064516129032258" targetAnchorY="0.18085106382978725">
+    <source href="assembly.xml#//@beans/@mixed.1/@route.3/@subRoute.0"/>
+    <target href="assembly.xml#WSOffSuccess"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.9619047619047619" sourceAnchorY="0.5882352941176471" targetAnchorX="0.02727272727272727" targetAnchorY="0.30851063829787234">
+    <source href="assembly.xml#//@beans/@mixed.1/@route.3/@subRoute.1"/>
+    <target href="assembly.xml#WSOffError5"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.9622641509433962" sourceAnchorY="0.16260162601626016" targetAnchorX="0.010101010101010102" targetAnchorY="0.7567567567567568">
+    <source href="assembly.xml#RegWSCall"/>
+    <target href="assembly.xml#RegWS"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.26717557251908397" sourceAnchorY="0.9" targetAnchorX="0.6454545454545455" targetAnchorY="0.0851063829787234">
+    <source href="assembly.xml#//@beans/@mixed.1/@mixed.73/@mixed.3"/>
+    <target href="assembly.xml#WSOffError4"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.29591836734693877" targetAnchorX="0.1388888888888889" targetAnchorY="0.3783783783783784">
+    <source href="assembly.xml#Off_Amount"/>
+    <target href="assembly.xml#CallCollate"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.2755102040816326" targetAnchorX="0.25" targetAnchorY="0.40540540540540543">
+    <source href="assembly.xml#Off_Hours"/>
+    <target href="assembly.xml#CallCollate"/>
+  </connections>
+  <connections type="routesResponseTo" sourceAnchorX="0.6944444444444444" sourceAnchorY="1.0" targetAnchorX="0.16111111111111112" targetAnchorY="0.5675675675675675">
+    <source href="assembly.xml#CallCollate"/>
+    <target href="assembly.xml#CallAggregate0"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.7699115044247787" sourceAnchorY="0.43243243243243246" targetAnchorX="0.1826086956521739" targetAnchorY="0.14150943396226415">
+    <source href="assembly.xml#Aggregate"/>
+    <target href="assembly.xml#Aggregator"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.362962962962963" sourceAnchorY="1.0" targetAnchorX="0.015748031496062992" targetAnchorY="0.22340425531914893">
+    <source href="assembly.xml#LoopData"/>
+    <target href="assembly.xml#AsyncMediation"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.0" sourceAnchorY="0.2755102040816326" targetAnchorX="0.8939393939393939" targetAnchorY="0.08045977011494253">
+    <source href="assembly.xml#AsyncMediation"/>
+    <target href="assembly.xml#Splitter"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.7058823529411765" sourceAnchorY="1.0" targetAnchorX="0.2064516129032258" targetAnchorY="0.5204081632653061">
+    <source href="assembly.xml#//@beans/@mixed.1/@splitter.2/@subRoute.0"/>
+    <target href="assembly.xml#WSOffError50"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.5135135135135135" targetAnchorX="0.1308411214953271" targetAnchorY="0.09090909090909091">
+    <source href="assembly.xml#ParseErrors"/>
+    <target href="assembly.xml#Splitter0"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.18478260869565216" targetAnchorX="0.27049180327868855" targetAnchorY="0.18085106382978725">
+    <source href="assembly.xml#AsyncMediation2"/>
+    <target href="assembly.xml#Off_Hours00"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.9619047619047619" sourceAnchorY="0.5294117647058824" targetAnchorX="0.021739130434782608" targetAnchorY="0.391304347826087">
+    <source href="assembly.xml#//@beans/@mixed.1/@route.3/@subRoute.3"/>
+    <target href="assembly.xml#WSOffSuccess00"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.34328358208955223" sourceAnchorY="0.8936170212765957" targetAnchorX="0.3475177304964539" targetAnchorY="0.1702127659574468">
+    <source href="assembly.xml#AsyncMediation0"/>
+    <target href="assembly.xml#AsyncMediation10"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.9181818181818182" sourceAnchorY="0.1702127659574468" targetAnchorX="0.03424657534246575" targetAnchorY="0.40540540540540543">
+    <source href="assembly.xml#WSOffError5"/>
+    <target href="assembly.xml#CallParseErrors"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.2872340425531915" targetAnchorX="0.15384615384615385" targetAnchorY="0.5675675675675675">
+    <source href="assembly.xml#Off_Hours00"/>
+    <target href="assembly.xml#OffWS"/>
+  </connections>
+  <connections type="routesResponseTo" sourceAnchorX="1.0" sourceAnchorY="0.7297297297297297" targetAnchorX="0.1476510067114094" targetAnchorY="0.43243243243243246">
+    <source href="assembly.xml#CallAggregate0"/>
+    <target href="assembly.xml#CallGenerateWS"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.6756756756756757" targetAnchorX="0.26865671641791045" targetAnchorY="0.1595744680851064">
+    <source href="assembly.xml#GenerateWS"/>
+    <target href="assembly.xml#AsyncMediation2"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.8727272727272727" sourceAnchorY="0.9361702127659575" targetAnchorX="0.07971014492753623" targetAnchorY="0.782608695652174">
+    <source href="assembly.xml#WSOffError4"/>
+    <target href="assembly.xml#WSOffSuccess00"/>
+    <bendpoints sourceX="-3" sourceY="158" targetX="-671" targetY="-3"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.6470588235294118" targetAnchorX="0.09420289855072464" targetAnchorY="0.06521739130434782">
+    <source href="assembly.xml#//@beans/@mixed.1/@route.3/@subRoute.2"/>
+    <target href="assembly.xml#WSOffSuccess00"/>
+  </connections>
+  <connections type="routesResponseTo" sourceAnchorX="0.8939393939393939" sourceAnchorY="1.0" targetAnchorX="0.057692307692307696" targetAnchorY="0.5945945945945946">
+    <source href="assembly.xml#CallCollateAfterAggregate"/>
+    <target href="assembly.xml#CallGenerateWS0"/>
+  </connections>
+  <connections type="routesResponseTo" sourceAnchorX="0.9038461538461539" sourceAnchorY="1.0" targetAnchorX="0.08208955223880597" targetAnchorY="0.22340425531914893">
+    <source href="assembly.xml#CallGenerateWS0"/>
+    <target href="assembly.xml#AsyncMediation3"/>
+  </connections>
+  <connections type="routesResponseTo" sourceAnchorX="1.0" sourceAnchorY="0.6216216216216216" targetAnchorX="0.08955223880597014" targetAnchorY="0.22340425531914893">
+    <source href="assembly.xml#CallGenerateWS"/>
+    <target href="assembly.xml#AsyncMediation0"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.2978723404255319" targetAnchorX="0.06565656565656566" targetAnchorY="0.5945945945945946">
+    <source href="assembly.xml#AsyncMediation10"/>
+    <target href="assembly.xml#CallCollateAfterAggregate"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.2608695652173913" targetAnchorX="0.144" targetAnchorY="0.6486486486486487">
+    <source href="assembly.xml#AsyncMediation4"/>
+    <target href="assembly.xml#CallCollate0"/>
+  </connections>
+  <connections type="routesResponseTo" sourceAnchorX="1.0" sourceAnchorY="0.8108108108108109" targetAnchorX="0.09848484848484848" targetAnchorY="0.5675675675675675">
+    <source href="assembly.xml#CallCollate0"/>
+    <target href="assembly.xml#CallCollate00"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.2755102040816326" targetAnchorX="0.2752808988764045" targetAnchorY="0.5612244897959183">
+    <source href="assembly.xml#AsyncMediation3"/>
+    <target href="assembly.xml#AsyncMediation4"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.4864864864864865" targetAnchorX="0.16292134831460675" targetAnchorY="0.1956521739130435">
+    <source href="assembly.xml#//@beans/@mixed.1/@mixed.31"/>
+    <target href="assembly.xml#AsyncMediation5"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.2717391304347826" targetAnchorX="0.24822695035460993" targetAnchorY="0.4864864864864865">
+    <source href="assembly.xml#AsyncMediation5"/>
+    <target href="assembly.xml#Note-Error"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.1375" targetAnchorX="0.2540983606557377" targetAnchorY="0.35135135135135137">
+    <source href="assembly.xml#LogStoreFile"/>
+    <target href="assembly.xml#Call_Build_Hash_Table"/>
+  </connections>
+  <connections type="routesResponseTo" sourceAnchorX="0.639344262295082" sourceAnchorY="1.0" targetAnchorX="0.06060606060606061" targetAnchorY="0.3563218390804598">
+    <source href="assembly.xml#Call_Build_Hash_Table"/>
+    <target href="assembly.xml#RouteFiles"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="1.0" sourceAnchorY="0.07751937984496124" targetAnchorX="0.21428571428571427" targetAnchorY="0.6486486486486487">
+    <source href="assembly.xml#TransformData"/>
+    <target href="assembly.xml#TransformedData"/>
+  </connections>
+  <connections type="routesTo" sourceAnchorX="0.7971014492753623" sourceAnchorY="1.0" targetAnchorX="0.09550561797752809" targetAnchorY="0.21739130434782608">
+    <source href="assembly.xml#//@beans/@mixed.1/@mixed.81/@mixed.3"/>
+    <target href="assembly.xml#AsyncMediationXSLT"/>
+  </connections>
+  <swimlanes x="17" y="14" name="INT061" orientation="VERTICAL" elements="//@swimlanes.2 //@swimlanes.5 //@swimlanes.6 //@swimlanes.9 //@swimlanes.19 //@swimlanes.17 //@swimlanes.18 //@swimlanes.1"/>
+  <swimlanes x="1009" y="61" name="Global Error Handler">
+    <elements href="assembly.xml#//@beans/@mixed.1/@mixed.31"/>
+    <elements href="assembly.xml#AsyncMediation5"/>
+    <elements href="assembly.xml#Note-Error"/>
+  </swimlanes>
+  <swimlanes x="1045" y="50" name="Read and transfer files">
+    <elements href="assembly.xml#StartHere"/>
+    <elements href="#//@swimlanes.3"/>
+    <elements href="assembly.xml#Call_Build_Hash_Table"/>
+    <elements href="assembly.xml#RouteFiles"/>
+    <elements href="#//@swimlanes.4"/>
+    <elements href="assembly.xml#TransformedData"/>
+  </swimlanes>
+  <swimlanes x="1121" y="105" name="" orientation="VERTICAL">
+    <elements href="assembly.xml#LogStoreFile"/>
+    <elements href="assembly.xml#done"/>
+    <elements href="assembly.xml#Errors"/>
+  </swimlanes>
+  <swimlanes x="1652" y="204" name="" orientation="VERTICAL">
+    <elements href="assembly.xml#TransformData"/>
+    <elements href="assembly.xml#TransferError"/>
+  </swimlanes>
+  <swimlanes x="1044" y="469" name="Insert data to the hash table">
+    <elements href="assembly.xml#Hash_Map"/>
+    <elements href="assembly.xml#HashEvalInt"/>
+    <elements href="assembly.xml#HashWS"/>
+    <elements href="assembly.xml#SplitFile"/>
+    <elements href="assembly.xml#HashEval"/>
+  </swimlanes>
+  <swimlanes x="1108" y="702" name="Loop">
+    <elements href="assembly.xml#LoopData"/>
+    <elements href="assembly.xml#AsyncMediation"/>
+    <elements href="assembly.xml#Splitter"/>
+    <elements href="#//@swimlanes.7"/>
+    <elements href="assembly.xml#TM_Position"/>
+    <elements href="#//@swimlanes.8"/>
+    <elements href="assembly.xml#CallSubRoutine"/>
+  </swimlanes>
+  <swimlanes x="1412" y="801" name="" orientation="VERTICAL">
+    <elements href="assembly.xml#Evaluation"/>
+    <elements href="assembly.xml#HashError"/>
+  </swimlanes>
+  <swimlanes x="1845" y="806" name="" orientation="VERTICAL">
+    <elements href="assembly.xml#Position"/>
+    <elements href="assembly.xml#Position1"/>
+    <elements href="assembly.xml#Position2"/>
+  </swimlanes>
+  <swimlanes x="1072" y="1185" name="Call WD web service">
+    <elements href="assembly.xml#SubRoutine"/>
+    <elements href="assembly.xml#WSCallType"/>
+    <elements href="#//@swimlanes.10"/>
+    <elements href="#//@swimlanes.12"/>
+  </swimlanes>
+  <swimlanes x="1269" y="1276" name="" orientation="VERTICAL">
+    <elements href="assembly.xml#Amount"/>
+    <elements href="assembly.xml#Hours"/>
+    <elements href="assembly.xml#Off_Amount"/>
+    <elements href="assembly.xml#Off_Hours"/>
+  </swimlanes>
+  <swimlanes x="1550" y="1336" name="" orientation="VERTICAL">
+    <elements href="assembly.xml#RegWSCall"/>
+    <elements href="assembly.xml#AsyncMediation1"/>
+  </swimlanes>
+  <swimlanes x="1550" y="1312" name="" orientation="VERTICAL" elements="//@swimlanes.13"/>
+  <swimlanes x="1722" y="1612" name="">
+    <elements href="assembly.xml#CallCollate"/>
+    <elements href="assembly.xml#CallAggregate0"/>
+    <elements href="assembly.xml#CallGenerateWS"/>
+    <elements href="assembly.xml#AsyncMediation0"/>
+    <elements href="assembly.xml#AsyncMediation10"/>
+    <elements href="assembly.xml#CallCollateAfterAggregate"/>
+    <elements href="assembly.xml#CallGenerateWS0"/>
+    <elements href="assembly.xml#AsyncMediation3"/>
+    <elements href="assembly.xml#AsyncMediation4"/>
+    <elements href="assembly.xml#CallCollate0"/>
+    <elements href="assembly.xml#CallCollate00"/>
+  </swimlanes>
+  <swimlanes x="712" y="1364" name="">
+    <elements href="#//@swimlanes.11"/>
+    <elements href="assembly.xml#RegWS"/>
+    <elements href="assembly.xml#WSRegSucess"/>
+  </swimlanes>
+  <swimlanes x="2342" y="1776" name="" orientation="VERTICAL">
+    <elements href="assembly.xml#OffWSStatus"/>
+    <elements href="assembly.xml#WSOffError4"/>
+  </swimlanes>
+  <swimlanes x="3092" y="1898" name="" orientation="VERTICAL">
+    <elements href="assembly.xml#WSOffSuccess"/>
+    <elements href="#//@swimlanes.20"/>
+    <elements href="assembly.xml#WSOffSuccess00"/>
+  </swimlanes>
+  <swimlanes x="1124" y="2163" name="Aggregate data">
+    <elements href="assembly.xml#Aggregate"/>
+    <elements href="assembly.xml#Aggregator"/>
+  </swimlanes>
+  <swimlanes x="1015" y="2358" name="Parse Errors">
+    <elements href="assembly.xml#ParseErrors"/>
+    <elements href="assembly.xml#Splitter0"/>
+    <elements href="assembly.xml#WSOffError50"/>
+  </swimlanes>
+  <swimlanes x="116" y="2289" name="Generate WS Request">
+    <elements href="assembly.xml#GenerateWS"/>
+    <elements href="assembly.xml#AsyncMediation2"/>
+    <elements href="assembly.xml#Off_Hours00"/>
+    <elements href="assembly.xml#OffWS"/>
+    <elements href="#//@swimlanes.15"/>
+    <elements href="assembly.xml#StatusWS"/>
+    <elements href="assembly.xml#OffStatusVar"/>
+    <elements href="assembly.xml#WSStatus"/>
+    <elements href="#//@swimlanes.16"/>
+  </swimlanes>
+  <swimlanes x="1472" y="2082" name="">
+    <elements href="assembly.xml#WSOffError5"/>
+    <elements href="assembly.xml#CallParseErrors"/>
+    <elements href="assembly.xml#AsyncMediationXSLT"/>
+  </swimlanes>
+</wdnm:Diagram>

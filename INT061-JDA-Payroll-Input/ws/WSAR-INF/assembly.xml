@@ -1,0 +1,794 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+     xmlns="http://www.springframework.org/schema/beans"
+     xmlns:beans="http://www.springframework.org/schema/beans"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:cc="http://www.capeclear.com/assembly/10"
+     xmlns:cloud="urn:com.workday/esb/cloud/10.0"
+     xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+     xmlns:ns0="http://Microsoft.LobServices.OracleDB/2007/03/SYSADM/Table/PS_GEX_SMTRK_IN"
+     xmlns:pi="urn:com.workday/picof"
+     xmlns:wd="urn:com.workday/bsvc"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ 
+	<cc:assembly id="WorkdayAssembly" version="2018.35">
+        <cc:workday-in id="StartHere" routes-to="LogStoreFile">
+            <cc:integration-system name="INT061_STU_PAY_SmartTrack_Payroll_Inbound">
+        <cloud:attribute-map-service name="Job Mapping">
+          <cloud:map name="Jobcode">
+            <cloud:internal-type>
+              <cloud:simple-type>text</cloud:simple-type>
+            </cloud:internal-type>
+            <cloud:external-type>
+              <cloud:simple-type>text</cloud:simple-type>
+            </cloud:external-type>
+          </cloud:map>
+        </cloud:attribute-map-service>
+        <cloud:retrieval-service name="INT061 File Retrieval"/>
+        <cloud:report-service name="RaaS Payment Date">
+          <cloud:report-alias description="get worker position and payment date" name="CR Payment Date">
+            <cloud:report-reference description="CR_INT061_Payment_Date" type="WID">15a8cc2817f601ca0a8df4095d0e5fff</cloud:report-reference>
+          </cloud:report-alias>
+        </cloud:report-service>
+      </cc:integration-system>
+        </cc:workday-in>
+         
+           <cc:async-mediation id="TransformData" routes-to="TransformedData">
+            <cc:steps>
+                <cc:write id="Write" input="variable" input-variable="JDA_IN">
+                    <cc:message>
+                        <cc:message-content/>
+                    </cc:message>
+                </cc:write>
+                <cc:eval id="Eval">
+                    <cc:expression>props['StoreNum']=parts[0].xpath('(//ns0:Insert/ns0:RECORDSET/ns0:PS_GEX_SMTRK_INRECORDINSERT/ns0:DEPTID_HOME)[1]')</cc:expression>
+                </cc:eval>
+                <cc:log id="Log">
+                    <cc:log-message>
+                        <cc:text></cc:text>
+                    </cc:log-message>
+                </cc:log>
+                <cc:xslt id="JDA_IN" url="JDATransfer1.xsl"/>
+                <cc:xslt id="Pay_Grouping" url="JDATransfer2.xsl"/>
+            </cc:steps>
+            <cc:send-error id="SendError" routes-to="TransferError"/>
+        </cc:async-mediation>
+         <cc:splitter id="Splitter" no-split-message-error="false">
+            <cc:sub-route name="SubRoute" routes-to="Evaluation"/>
+            <cc:xml-stream-splitter xpath="JDAPay/Pay/"/>
+        </cc:splitter> 
+        <cc:async-mediation id="Evaluation" routes-to="TM_Position" handle-downstream-errors="true">
+            <cc:steps>
+               <cc:eval id="File_Eval">
+                    <cc:expression>props['ECD'] =parts[0].xpath('/Pay/ErnCD')</cc:expression>
+                    <cc:expression>props['EmpID'] =parts[0].xpath('/Pay/Empl')</cc:expression>
+                    <cc:expression>props['Amt'] =parts[0].xpath('/Pay/Amount')</cc:expression>
+                    <cc:expression>props['DeptId'] =parts[0].xpath('/Pay/DeptID')</cc:expression>
+                    <cc:expression>props['STJobId'] =parts[0].xpath('/Pay/JobCD')</cc:expression>
+                    <cc:expression>props['AcctCd'] =parts[0].xpath('/Pay/AccCD')</cc:expression>
+                    <cc:expression>props['RegHrs'] =parts[0].xpath('/Pay/Hours')</cc:expression>
+                   <cc:expression>props['EmpID'] =parts[0].xpath('/Pay/Empl');&#xD;
+if (&quot;&quot;.equalsIgnoreCase(props['PrevEmpID'])) {&#xD;
+	props['PrevEmpID']=props['EmpID'];&#xD;
+}</cc:expression>
+                    <cc:expression>props['HourlyRt'] =parts[0].xpath('/Pay/Rate')</cc:expression>
+                    <cc:expression>props['PayBeginDt'] =parts[0].xpath('/Pay/PayBDT')</cc:expression>
+                    <cc:expression>props['PayEndDt'] =parts[0].xpath('/Pay/PayEDT')</cc:expression>
+                    <cc:expression>props['Shift_Code'] =parts[0].xpath('/Pay/normalize-space(Shift_Code)')</cc:expression>
+                    <cc:expression>props['Amount'] = props['Amt'] != 0 ?  true : false</cc:expression>
+                    <cc:expression>props['flag'] =parts[0].xpath('/Pay/flag')</cc:expression>
+                    <cc:expression>props['Cycle'] =props['flag'] =='ON' ?  true : false</cc:expression>
+                    <cc:expression>props['BatchID'] ='Pay'# parts[0].xpath('/Pay/BTID');&#xD;
+if (&quot;&quot;.equalsIgnoreCase(props['PrevBatchID'])) {&#xD;
+	props['PrevBatchID']=props['BatchID'];&#xD;
+}</cc:expression>
+                   <cc:expression>props['Action'] =parts[0].xpath('/Pay/act');&#xD;
+if (&quot;&quot;.equalsIgnoreCase(props['PrevAction'])) {&#xD;
+	props['PrevAction']=props['Action'];&#xD;
+}</cc:expression>
+                   <cc:expression>props['EmpRec']= parts[0].xpath('/Pay/EmpRCD')</cc:expression>
+                   <cc:expression>props['Shiftcd']= parts[0].xpath('/Pay/shfcd')</cc:expression>
+                   <cc:expression>props['Tag']=props['ECD'] =='OTP' ||props['ECD'] =='171'||props['ECD'] =='172'||props['ECD'] =='173'?  true : false</cc:expression>
+                   <cc:expression>props['Isshiftcd']= ( props['Shiftcd'].length()>=1 ) ? 'sc': 'nsc'</cc:expression>
+                   <cc:expression>props['JobId'] = intsys.integrationMapReverseLookup('Jobcode',props['STJobId']) != null ? intsys.integrationMapReverseLookup('Jobcode', props['STJobId']).get(0).textValue : props['STJobId'] </cc:expression>
+                   <cc:expression>props['PayEndDt'] =parts[0].xpath('/Pay/PayEDT');&#xD;
+if (&quot;&quot;.equalsIgnoreCase(props['PrevPayEndDt'])) {&#xD;
+	props['PrevPayEndDt']=props['PayEndDt'];&#xD;
+}</cc:expression>
+                   <cc:expression>props['Category'] = parts[0].xpath('/Pay/category');&#xD;
+if (&quot;&quot;.equalsIgnoreCase(props['PrevCategory'])) {&#xD;
+	props['PrevCategory']=props['Category'];&#xD;
+}</cc:expression>
+                   <cc:expression>props['ErrorSev']=&quot;&quot;</cc:expression>
+                </cc:eval>
+                <cc:eval id="Hash_Table_Eval">
+                    <cc:expression>vars['p.hm.node'] = props['p.workerid-hash'].get(props['EmpID'])</cc:expression>
+                    <cc:expression>props['PaymentDate'] =vars['p.hm.node'].xpath(&quot;wd:Report_Entry/wd:date&quot;);&#xD;
+if (&quot;&quot;.equalsIgnoreCase(props['PrevPaymentDate'])) {&#xD;
+	props['PrevPaymentDate']=props['PaymentDate'];&#xD;
+}</cc:expression>
+                    <cc:expression>props['Counter'] =props['Counter']+1</cc:expression>
+                    <cc:expression>props['PayID']= props['EmpID'] # props['Counter'];&#xD;
+if (&quot;&quot;.equalsIgnoreCase(props['PrevPayID'])) {&#xD;
+	props['PrevPayID']=props['PayID'];&#xD;
+}</cc:expression>
+                    <cc:expression>props['Pos'] = vars['p.hm.node'].xpath(&quot;wd:Report_Entry/wd:Position_ID&quot;) </cc:expression>
+                    <cc:expression>props['Pos1'] = vars['p.hm.node'].xpath(&quot;wd:Report_Entry/wd:CF_Position_ID_1&quot;) </cc:expression>
+                    <cc:expression>props['Pos2'] = vars['p.hm.node'].xpath(&quot;wd:Report_Entry/wd:CF_Position_ID_2&quot;) </cc:expression>
+                </cc:eval>
+                <cc:log id="Log0">
+                    <cc:log-message>
+                        <cc:text>emp=  @{props['EmpID']}&#xD;
+emprec =@{props['EmpRec']}&#xD;
+position = @{props['Pos']}&#xD;
+position1 = @{props['Pos1']}&#xD;
+&#xD;
+position2 = @{props['Pos2']}&#xD;
+props['JobId'] =@{props['JobId']}&#xD;
+props['STJobId']= @{props['STJobId']}&#xD;
+</cc:text>
+                    </cc:log-message>
+                </cc:log>
+            </cc:steps>
+            <cc:send-error id="SendError" routes-to="HashError"/>
+            <!--  <cc:send-error id="SendError"/>-->
+        </cc:async-mediation> 
+           <cc:route id="WSCallType">
+            <cc:mvel-strategy>
+                <cc:choose-route expression="props['Amount'] != true &amp;&amp; props['Cycle'] ==true " route="Hours"/>
+                <cc:choose-route expression="props['Amount']==true &amp;&amp; props['Cycle'] ==true " route="Amount"/>
+          <cc:choose-route expression="props['Amount'] != true &amp;&amp; props['Cycle'] !=true" route="OffHours"/>
+                <cc:choose-route expression="props['Amount']==true &amp;&amp; props['Cycle'] !=true" route="OffAmount"/>
+          
+            </cc:mvel-strategy>
+            <cc:sub-route name="Amount" routes-to="Amount"/>
+            <cc:sub-route name="Hours" routes-to="Hours"/>
+            <cc:sub-route name="OffAmount" routes-to="Off_Amount"/>
+            <cc:sub-route name="OffHours" routes-to="Off_Hours"/>
+        </cc:route>
+          <cc:async-mediation id="Hours" routes-to="RegWSCall">
+            <cc:steps>
+                <cc:eval id="Eval">
+                    <cc:expression>props[&quot;HourlyRt&quot;]= props[&quot;HourlyRt&quot;]>200  ? 0: props[&quot;HourlyRt&quot;]</cc:expression>
+                </cc:eval>
+                <cc:write id="Write">
+                    <cc:message>
+                        <cc:text>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;
+&lt;env:Envelope xmlns:env=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&#xD;
+    xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;>&#xD;
+    &lt;env:Body>&#xD;
+        &lt;wd:Submit_Payroll_Input_Request xmlns:wd=&quot;urn:com.workday/bsvc&quot; wd:version=&quot;v30.2&quot;>&#xD;
+            &lt;wd:Payroll_Input_Data>&#xD;
+             &#xD;
+                &lt;wd:Batch_ID>@{util.cleanString( props[&quot;BatchID&quot;])}&lt;/wd:Batch_ID>&#xD;
+             &#xD;
+                &lt;wd:Ongoing_Input>false&lt;/wd:Ongoing_Input>&#xD;
+                &lt;wd:Start_Date>@{util.cleanString( props[&quot;PayBeginDt&quot;])}&lt;/wd:Start_Date>&#xD;
+                &lt;wd:End_Date>@{util.cleanString( props[&quot;PayEndDt&quot;])}&lt;/wd:End_Date>&#xD;
+                &lt;wd:Run_Category_Reference>&#xD;
+                    &lt;wd:ID wd:type=&quot;Run_Category_ID&quot;>Regular&lt;/wd:ID>&#xD;
+                &lt;/wd:Run_Category_Reference>&#xD;
+                &lt;wd:Worker_Reference>&#xD;
+                    &lt;wd:ID wd:type=&quot;Employee_ID&quot;>@{util.cleanString( props[&quot;EmpID&quot;])}&lt;/wd:ID>&#xD;
+                &lt;/wd:Worker_Reference>&#xD;
+                 &lt;wd:Position_Reference>&#xD;
+                    &lt;wd:ID wd:type=&quot;Position_ID&quot;>@{util.cleanString( props['Position'])}&lt;/wd:ID>&#xD;
+                &lt;/wd:Position_Reference>&#xD;
+				&#xD;
+				&lt;wd:Earning_Reference>&#xD;
+                    &lt;wd:ID wd:type=&quot;Earning_Code&quot;>@{util.cleanString( props[&quot;ECD&quot;])}&lt;/wd:ID>&#xD;
+                &lt;/wd:Earning_Reference>&#xD;
+                &lt;wd:Hours>@{util.cleanString( props[&quot;RegHrs&quot;])}&lt;/wd:Hours>&#xD;
+			 &#xD;
+				     @if{props[&quot;HourlyRt&quot;] != 0}&#xD;
+           &lt;wd:Rate>@{util.cleanString( props[&quot;HourlyRt&quot;])}&lt;/wd:Rate>&#xD;
+              @end{}&#xD;
+           &#xD;
+				  &lt;wd:Adjustment>false&lt;/wd:Adjustment>&#xD;
+                &lt;wd:Worktag_Data>&#xD;
+                    &lt;wd:Location_Reference>&#xD;
+                        &lt;wd:ID wd:type=&quot;Location_ID&quot;>@{util.cleanString( props[&quot;DeptId&quot;])}&lt;/wd:ID>&#xD;
+                    &lt;/wd:Location_Reference>&#xD;
+                   &#xD;
+                    &lt;wd:Job_Profile_Reference>&#xD;
+                        &lt;wd:ID wd:type=&quot;Job_Profile_ID&quot;>@{util.cleanString( props[&quot;JobId&quot;])} &lt;/wd:ID>&#xD;
+                    &lt;/wd:Job_Profile_Reference>&#xD;
+           &#xD;
+                 &lt;wd:Custom_Organization_Reference>&#xD;
+                        &lt;wd:ID wd:type=&quot;Custom_Organization_Reference_ID&quot;>@{util.cleanString( props[&quot;AcctCd&quot;])} &lt;/wd:ID>&#xD;
+                    &lt;/wd:Custom_Organization_Reference> &#xD;
+                        @if{props['Isshiftcd']!='nsc'}&#xD;
+					   &lt;wd:Custom_Worktag_02_Reference>&#xD;
+                            &lt;wd:ID wd:type=&quot;Custom_Worktag_2_ID&quot;>@{util.cleanString(props[&quot;Shiftcd&quot;])}&lt;/wd:ID>&#xD;
+                        &lt;/wd:Custom_Worktag_02_Reference>&#xD;
+						  @end{}   &#xD;
+           &lt;/wd:Worktag_Data>&#xD;
+            &lt;/wd:Payroll_Input_Data>&#xD;
+        &lt;/wd:Submit_Payroll_Input_Request>&#xD;
+    &lt;/env:Body>&#xD;
+&lt;/env:Envelope></cc:text>
+                    </cc:message>
+                </cc:write>
+            </cc:steps>
+        </cc:async-mediation>
+        
+        <cc:workday-out-soap id="RegWS" routes-response-to="WSRegSucess" application="Payroll" version="v31.2"/>
+       <cc:async-mediation id="Amount" routes-to="RegWSCall">
+            <cc:steps>
+                <cc:write id="Write">
+                    <cc:message>
+                        <cc:text>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;
+&lt;env:Envelope xmlns:env=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&#xD;
+    xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;>&#xD;
+    &lt;env:Body>&#xD;
+        &lt;wd:Submit_Payroll_Input_Request xmlns:wd=&quot;urn:com.workday/bsvc&quot; wd:version=&quot;v30.2&quot;>&#xD;
+            &lt;wd:Payroll_Input_Data>&#xD;
+             &#xD;
+                &lt;wd:Batch_ID>@{util.cleanString( props[&quot;BatchID&quot;])}&lt;/wd:Batch_ID>&#xD;
+             &#xD;
+                &lt;wd:Ongoing_Input>false&lt;/wd:Ongoing_Input>&#xD;
+                &lt;wd:Start_Date>@{util.cleanString( props[&quot;PayBeginDt&quot;])}&lt;/wd:Start_Date>&#xD;
+                &lt;wd:End_Date>@{util.cleanString( props[&quot;PayEndDt&quot;])}&lt;/wd:End_Date>&#xD;
+                &lt;wd:Run_Category_Reference>&#xD;
+                    &lt;wd:ID wd:type=&quot;Run_Category_ID&quot;>Regular&lt;/wd:ID>&#xD;
+                &lt;/wd:Run_Category_Reference>&#xD;
+                &lt;wd:Worker_Reference>&#xD;
+                    &lt;wd:ID wd:type=&quot;Employee_ID&quot;>@{util.cleanString( props[&quot;EmpID&quot;])}&lt;/wd:ID>&#xD;
+                &lt;/wd:Worker_Reference>&#xD;
+                 &lt;wd:Position_Reference>&#xD;
+                    &lt;wd:ID wd:type=&quot;Position_ID&quot;>@{util.cleanString( props['Position'])}&lt;/wd:ID>&#xD;
+                &lt;/wd:Position_Reference>&#xD;
+				&#xD;
+				&lt;wd:Earning_Reference>&#xD;
+                    &lt;wd:ID wd:type=&quot;Earning_Code&quot;>@{util.cleanString( props[&quot;ECD&quot;])}&lt;/wd:ID>&#xD;
+                &lt;/wd:Earning_Reference>&#xD;
+                &lt;wd:Amount>@{util.cleanString( props[&quot;Amt&quot;])}&lt;/wd:Amount>&#xD;
+                &lt;wd:Adjustment>false&lt;/wd:Adjustment>&#xD;
+				 &#xD;
+                &lt;wd:Worktag_Data>&#xD;
+                    &lt;wd:Location_Reference>&#xD;
+                        &lt;wd:ID wd:type=&quot;Location_ID&quot;>@{util.cleanString( props[&quot;DeptId&quot;])}&lt;/wd:ID>&#xD;
+                    &lt;/wd:Location_Reference>&#xD;
+                   &#xD;
+                    &lt;wd:Job_Profile_Reference>&#xD;
+                        &lt;wd:ID wd:type=&quot;Job_Profile_ID&quot;>@{util.cleanString( props[&quot;JobId&quot;])} &lt;/wd:ID>&#xD;
+                    &lt;/wd:Job_Profile_Reference>&#xD;
+           &#xD;
+                 &lt;wd:Custom_Organization_Reference>&#xD;
+                        &lt;wd:ID wd:type=&quot;Custom_Organization_Reference_ID&quot;>@{util.cleanString( props[&quot;AcctCd&quot;])} &lt;/wd:ID>&#xD;
+                    &lt;/wd:Custom_Organization_Reference> &#xD;
+                           @if{props['Isshiftcd']!='nsc'}&#xD;
+					   &lt;wd:Custom_Worktag_02_Reference>&#xD;
+                            &lt;wd:ID wd:type=&quot;Custom_Worktag_2_ID&quot;>@{util.cleanString(props[&quot;Shiftcd&quot;])}&lt;/wd:ID>&#xD;
+                        &lt;/wd:Custom_Worktag_02_Reference>&#xD;
+						  @end{}&#xD;
+           &lt;/wd:Worktag_Data>&#xD;
+            &lt;/wd:Payroll_Input_Data>&#xD;
+        &lt;/wd:Submit_Payroll_Input_Request>&#xD;
+    &lt;/env:Body>&#xD;
+&lt;/env:Envelope></cc:text>
+                    </cc:message>
+                </cc:write>
+            </cc:steps>
+        </cc:async-mediation>
+             <cc:async-mediation id="Off_Hours" routes-to="CallCollate">
+            <cc:steps>
+                <cc:eval id="Eval">
+                    <cc:expression>props['BatchID']=props['BatchID']# 'OFF'</cc:expression>
+                    <cc:expression>props[&quot;HourlyRt&quot;]= props[&quot;HourlyRt&quot;]>200  ? 0: props[&quot;HourlyRt&quot;]</cc:expression>
+                    <cc:expression>props['collate']=props['PrevEmpID'].equalsIgnoreCase(props['EmpID']) &amp;&amp; props['PrevPayEndDt'].equalsIgnoreCase(props['PayEndDt']) &amp;&amp; props['PrevCategory'].equalsIgnoreCase(props['Category']) &amp;&amp; props['PrevAction'].equalsIgnoreCase(props['Action']);&#xD;
+props['lastMessageInBatch'] = util.isLastMessageInBatch();</cc:expression>
+                </cc:eval>
+                <cc:write id="Write" output="variable" output-mimetype="text/plain" output-variable="currentXMLChunk">
+                    <cc:message>
+                        <cc:text>                &lt;wd:Off-cycle_Input_Data>&#xD;
+                    &lt;wd:Earning_Reference>&#xD;
+                        &lt;wd:ID wd:type=&quot;Earning_Code&quot;>@{util.cleanString( props[&quot;ECD&quot;])}&lt;/wd:ID>&#xD;
+                    &lt;/wd:Earning_Reference>&#xD;
+                 &lt;wd:Position_Reference>&#xD;
+                        &lt;wd:ID wd:type=&quot;Position_ID&quot;>@{util.cleanString( props['Position'])}&lt;/wd:ID>&#xD;
+                    &lt;/wd:Position_Reference>&#xD;
+                  &#xD;
+                    &lt;wd:Hours>@{util.cleanString( props[&quot;RegHrs&quot;])}&lt;/wd:Hours>&#xD;
+                     &#xD;
+                 @if{props[&quot;HourlyRt&quot;] != 0}&#xD;
+           &lt;wd:Rate>@{util.cleanString( props[&quot;HourlyRt&quot;])}&lt;/wd:Rate>&#xD;
+              @end{}&#xD;
+                    &lt;wd:Adjustment>false&lt;/wd:Adjustment>&#xD;
+&#xD;
+                    &lt;wd:Payroll_Worktags_Data>&#xD;
+                        &lt;wd:Location_Reference>&#xD;
+                            &lt;wd:ID wd:type=&quot;Location_ID&quot;>@{util.cleanString( props[&quot;DeptId&quot;])}&lt;/wd:ID>&#xD;
+                        &lt;/wd:Location_Reference>&#xD;
+                     &#xD;
+                        &lt;wd:Job_Profile_Reference>&#xD;
+                            &lt;wd:ID wd:type=&quot;Job_Profile_ID&quot;>@{util.cleanString( props[&quot;JobId&quot;])}&lt;/wd:ID>&#xD;
+                        &lt;/wd:Job_Profile_Reference>&#xD;
+                    &#xD;
+                              &lt;wd:Custom_Organization_Reference>&#xD;
+                        &lt;wd:ID wd:type=&quot;Custom_Organization_Reference_ID&quot;>@{util.cleanString(props[&quot;AcctCd&quot;])}&lt;/wd:ID>&#xD;
+                    &lt;/wd:Custom_Organization_Reference>&#xD;
+                            @if{props['Isshiftcd']!='nsc'}&#xD;
+					   &lt;wd:Custom_Worktag_02_Reference>&#xD;
+                            &lt;wd:ID wd:type=&quot;Custom_Worktag_2_ID&quot;>@{util.cleanString(props[&quot;Shiftcd&quot;])}&lt;/wd:ID>&#xD;
+                        &lt;/wd:Custom_Worktag_02_Reference>&#xD;
+						  @end{}&#xD;
+                    &lt;/wd:Payroll_Worktags_Data>&#xD;
+                &#xD;
+                &lt;/wd:Off-cycle_Input_Data>&#xD;
+</cc:text>
+                    </cc:message>
+                </cc:write>
+                <cc:log id="Log">
+                    <cc:log-message>
+                        <cc:message-content/>
+                    </cc:log-message>
+                </cc:log>
+                <cc:copy id="Copy" output-mimetype="text/plain" input="variable" input-variable="currentXMLChunk"/>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:async-mediation id="Off_Amount" routes-to="CallCollate">
+            <cc:steps>
+                <cc:eval id="Eval">
+                    <cc:expression>props['BatchID']=props['BatchID']# 'OFF'</cc:expression>
+                    <cc:expression>props['collate']=props['PrevEmpID'].equalsIgnoreCase(props['EmpID']) &amp;&amp; props['PrevPayEndDt'].equalsIgnoreCase(props['PayEndDt']) &amp;&amp; props['PrevCategory'].equalsIgnoreCase(props['Category']) &amp;&amp; props['PrevAction'].equalsIgnoreCase(props['Action']);&#xD;
+props['lastMessageInBatch'] = util.isLastMessageInBatch();</cc:expression>
+                </cc:eval>
+                <cc:write id="Write" output="variable" output-mimetype="text/plain" output-variable="currentXMLChunk">
+                    <cc:message>
+                        <cc:text>                &lt;wd:Off-cycle_Input_Data>&#xD;
+                    &lt;wd:Earning_Reference>&#xD;
+                        &lt;wd:ID wd:type=&quot;Earning_Code&quot;>@{util.cleanString( props[&quot;ECD&quot;])}&lt;/wd:ID>&#xD;
+                    &lt;/wd:Earning_Reference>&#xD;
+                  &lt;wd:Position_Reference>&#xD;
+                        &lt;wd:ID wd:type=&quot;Position_ID&quot;>@{util.cleanString( props['Position'])}&lt;/wd:ID>&#xD;
+                    &lt;/wd:Position_Reference>&#xD;
+                    &lt;wd:Amount>@{util.cleanString( props[&quot;Amt&quot;])}&lt;/wd:Amount>&#xD;
+       &#xD;
+                    &lt;wd:Adjustment>false&lt;/wd:Adjustment>&#xD;
+&#xD;
+                    &lt;wd:Payroll_Worktags_Data>&#xD;
+                        &lt;wd:Location_Reference>&#xD;
+                            &lt;wd:ID wd:type=&quot;Location_ID&quot;>@{util.cleanString( props[&quot;DeptId&quot;])}&lt;/wd:ID>&#xD;
+                        &lt;/wd:Location_Reference>&#xD;
+                     &#xD;
+                        &lt;wd:Job_Profile_Reference>&#xD;
+                            &lt;wd:ID wd:type=&quot;Job_Profile_ID&quot;>@{util.cleanString( props[&quot;JobId&quot;])}&lt;/wd:ID>&#xD;
+                        &lt;/wd:Job_Profile_Reference>&#xD;
+                    &#xD;
+                              &lt;wd:Custom_Organization_Reference>&#xD;
+                        &lt;wd:ID wd:type=&quot;Custom_Organization_Reference_ID&quot;>@{util.cleanString(props[&quot;AcctCd&quot;])}&lt;/wd:ID>&#xD;
+                    &lt;/wd:Custom_Organization_Reference>&#xD;
+                            @if{props['Isshiftcd']!='nsc'}&#xD;
+					   &lt;wd:Custom_Worktag_02_Reference>&#xD;
+                            &lt;wd:ID wd:type=&quot;Custom_Worktag_2_ID&quot;>@{util.cleanString(props[&quot;Shiftcd&quot;])}&lt;/wd:ID>&#xD;
+                        &lt;/wd:Custom_Worktag_02_Reference>&#xD;
+						  @end{}&#xD;
+                    &lt;/wd:Payroll_Worktags_Data>&#xD;
+                &#xD;
+                &lt;/wd:Off-cycle_Input_Data>&#xD;
+            </cc:text>
+                    </cc:message>
+                </cc:write>
+                <cc:log id="Log">
+                    <cc:log-message>
+                        <cc:message-content/>
+                    </cc:log-message>
+                </cc:log>
+                <cc:copy id="Copy" output-mimetype="text/plain" input="variable" input-variable="currentXMLChunk"/>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:route id="RouteFiles">
+            <cc:doc-iterator variable-name="JDA_IN"/>
+            <cc:sub-route name="SubRoute" routes-to="TransformData"/>
+        </cc:route>
+        <cc:local-out id="TransformedData" store-message="none" endpoint="vm://INT061-JDA-Payroll-Input/LoopData"/>
+        <cc:local-in id="LoopData" routes-to="AsyncMediation"/>
+        <cc:local-out id="CallSubRoutine" store-message="none" endpoint="vm://INT061-JDA-Payroll-Input/SubRoutine"/>
+        <cc:local-in id="SubRoutine" routes-to="WSCallType"/>
+        <cc:send-error id="global-error-handler" rethrow-error="false" routes-to="AsyncMediation5"/>
+        <cc:local-out id="Note-Error" endpoint="vm://wcc/PutIntegrationMessage">
+            <cc:set name="is.message.severity" value="'CRITICAL'"/>
+            <cc:set name="is.message.summary" value="context.errorMessage"/>
+        </cc:local-out>
+        <cc:workday-out-rest id="HashWS" routes-response-to="SplitFile" extra-path="@{intsys.reportService.getExtrapath('CR Payment Date')}?format=simplexml"/>
+        <cc:async-mediation id="HashEvalInt" routes-to="HashWS">
+            <cc:steps>
+                <cc:eval id="Eval">
+                    <cc:expression>props['p.hash-key']=''</cc:expression>
+                    <cc:expression>props['p.workerid-hash'] = new java.util.HashMap()</cc:expression>
+                    <cc:expression>props['Counter'] =100</cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:splitter id="SplitFile">
+            <cc:sub-route name="SubRoute" routes-to="HashEval"/>
+            <cc:xml-stream-splitter xpath="wd:Report_Data/wd:Report_Entry"/>
+        </cc:splitter>
+        <cc:async-mediation id="HashEval">
+            <cc:steps>
+                <cc:eval id="Eval">
+                    <cc:expression>props['p.hash-key']= parts[0].xpath(&quot;wd:Report_Entry/wd:Team_Member_ID&quot;)</cc:expression>
+                    <cc:expression>props['p.workerid-hash'].put(props['p.hash-key'], parts[0].text) </cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:local-out id="Call_Build_Hash_Table" store-message="none" execute-when="da.size()>0" routes-response-to="RouteFiles" endpoint="vm://INT061-JDA-Payroll-Input/Hash_Map"/>
+        <cc:local-in id="Hash_Map" routes-to="HashEvalInt"/>
+        <cc:route id="TM_Position">
+            <cc:mvel-strategy>
+                <cc:choose-route expression="props['EmpRec']==2 &amp;&amp; props['Pos2'] !=empty" route="Position2"/>
+                <cc:choose-route expression="props['EmpRec']==2 &amp;&amp; props['Pos2'] ==empty" route="Position"/>
+                <cc:choose-route expression="props['EmpRec']==1 &amp;&amp; props['Pos1'] !=empty" route="Position1"/>
+                <cc:choose-route expression="props['EmpRec']==1 &amp;&amp; props['Pos1'] ==empty" route="Position"/>
+                <cc:choose-route expression="props['EmpRec']==0 " route="Position"/>
+            </cc:mvel-strategy>
+             <cc:sub-route name="Position" routes-to="Position"/>
+            <cc:sub-route name="Position1" routes-to="Position1"/>
+            <cc:sub-route name="Position2" routes-to="Position2"/>
+            
+        </cc:route>
+        <cc:async-mediation id="Position" routes-to="CallSubRoutine">
+            <cc:steps>
+                <cc:eval id="Eval">
+                    <cc:expression>props['Position']=props['Pos'] </cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:async-mediation id="Position1" routes-to="CallSubRoutine">
+            <cc:steps>
+                <cc:eval id="Eval">
+                    <cc:expression>props['Position']=props['Pos1'] </cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:async-mediation id="Position2" routes-to="CallSubRoutine">
+            <cc:steps>
+                <cc:eval id="Eval">
+                    <cc:expression>props['Position']=props['Pos2'] </cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:sync-mediation id="LogStoreFile" routes-to="Call_Build_Hash_Table" handle-downstream-errors="true" routes-response-to="done">
+            <cc:request-steps>
+                <cc:eval id="LogFile">
+                    <cc:expression>props['status-log'] = new java.lang.StringBuilder();</cc:expression>
+                    <cc:expression>props['status-log'].append('BatchID,EmployeeID, Action,Type, Date, Hours,Earn CD,  Note' + '\n')</cc:expression>
+                    <cc:expression>props['fail-count']=0</cc:expression>
+                    <cc:expression>props['Pass']=0</cc:expression>
+                </cc:eval>
+            </cc:request-steps>
+            <cc:response-steps>
+                <cc:store id="Store" output="message" createDocumentReference="true" expiresIn="P90D" title="log.csv"/>
+                <cc:write id="Write">
+                    <cc:message>
+                        <cc:text>@{props['status-log'].toString()}</cc:text>
+                    </cc:message>
+                </cc:write>
+            </cc:response-steps>
+        </cc:sync-mediation>
+        <cc:async-mediation id="AsyncMediation1">
+            <cc:steps>
+                <cc:eval id="ErrorFile3">
+                    <cc:expression>props['status-log'].append(props['BatchID']+','+ props['EmpID'] + ',  Web Service , Error'+ ',' +props['PayEndDt']+','+props['RegHrs']+',' +props['ECD']+','+ context.errorMessage   + '\n')</cc:expression>
+                    <cc:expression>props['fail-count'] = props['fail-count']+1</cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:local-out id="done" routes-response-to="Errors" endpoint="vm://wcc/PutIntegrationMessage"><cc:set name="is.message.severity" value="'INFO'"/><cc:set name="is.message.summary" value="'integration done'"/><cc:set name="is.message.storage.enabled" value="false"/></cc:local-out>
+        <cc:async-mediation id="HashError">
+            <cc:steps>
+                <cc:eval id="ErrorFile2">
+                    <cc:expression>props['status-log'].append(props['BatchID']+','+ props['EmpID'] + ', TM not in payment date report , Error,NA,NA,NA'+ ','+ context.errorMessage   + '\n')</cc:expression>
+                    <cc:expression>props['fail-count'] = props['fail-count']+1</cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:async-mediation id="RegWSCall" routes-to="RegWS" handle-downstream-errors="true">
+            <cc:steps>
+            </cc:steps>
+            <cc:send-error id="SendError" routes-to="AsyncMediation1"/>
+        </cc:async-mediation>
+        <cc:async-mediation id="TransferError">
+            <cc:steps>
+                <cc:eval id="ErrorFile1">
+                    <cc:expression>props['status-log'].append(props['StoreNum']+',N/A, Transform' + ','+ context.errorMessage   + '\n')</cc:expression>
+                    <cc:expression>props['fail-count'] = props['fail-count']+1</cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:local-out id="Errors" execute-when="props['fail-count'] > 0" endpoint="vm://wcc/PutIntegrationMessage"><cc:set name="is.message.severity" value="'ERROR'"/><cc:set name="is.message.summary" value="props['fail-count'] + 'errors. Check log for details'"/><cc:set name="is.message.storage.enabled" value="false"/></cc:local-out>
+        <cc:async-mediation id="WSRegSucess">
+            <cc:steps>
+                <cc:eval id="SuccessFile3">
+                    <cc:expression>props['status-log'].append(props['BatchID']+','+props['EmpID'] + ', Web service, success'+ ',' +'\n')</cc:expression>
+                    <cc:expression>props['Pass'] = props['Pass']+1</cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:workday-out-soap id="OffWS" execute-when="vars['aggregatedXMLChunk'].length > 0 &amp;&amp; (!props['collate'] || props['lastMessageInBatch'])" routes-response-to="OffWSStatus" application="Payroll" version="v31.2"/>
+        <cc:async-mediation id="OffWSStatus" routes-to="StatusWS" execute-steps-when="vars['aggregatedXMLChunk'].length > 0 &amp;&amp; (!props['collate'] || props['lastMessageInBatch'])" handle-downstream-errors="true">
+            <cc:steps>
+                <cc:log id="Log">
+                    <cc:log-message>
+                        <cc:message-content/>
+                    </cc:log-message>
+                </cc:log>
+                <cc:eval id="Eval">
+                    <cc:expression>props['BPWID']=parts[0].xpath('//env:Envelope/env:Body/wd:Put_Import_Process_Response/wd:Import_Process_Reference/wd:ID/text()')</cc:expression>
+                    <cc:expression>props['p.date']=parts[0].xpath(&quot;current-date()&quot;)</cc:expression>
+                </cc:eval>
+                <cc:write id="Write">
+                    <cc:message>
+                        <cc:text>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;
+&lt;env:Envelope&#xD;
+    xmlns:env=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&#xD;
+    xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;>&#xD;
+    &lt;env:Body>&#xD;
+        &lt;wd:Get_Import_Process_Messages_Request&#xD;
+            xmlns:wd=&quot;urn:com.workday/bsvc&quot;&#xD;
+            wd:version=&quot;v31.2&quot;>&#xD;
+            &lt;wd:Request_Criteria>&#xD;
+                &lt;wd:Import_Process_Reference>&#xD;
+                          &lt;wd:ID wd:type=&quot;WID&quot;>@{util.cleanString( props['BPWID'])}&lt;/wd:ID>&#xD;
+                &lt;/wd:Import_Process_Reference>&#xD;
+            &lt;/wd:Request_Criteria>&#xD;
+            &lt;wd:Response_Filter>&#xD;
+                &lt;wd:As_Of_Effective_Date>@{util.cleanString( props['p.date'])}&lt;/wd:As_Of_Effective_Date>&#xD;
+              &#xD;
+                &lt;wd:Page>1&lt;/wd:Page>&#xD;
+                &lt;wd:Count>100&lt;/wd:Count>&#xD;
+            &lt;/wd:Response_Filter>&#xD;
+        &lt;/wd:Get_Import_Process_Messages_Request>&#xD;
+    &lt;/env:Body>&#xD;
+&lt;/env:Envelope></cc:text>
+                    </cc:message>
+                </cc:write>
+                <cc:eval id="Eval0">
+                    <cc:expression>Thread.currentThread().sleep(10000); </cc:expression>
+                </cc:eval>
+            </cc:steps>
+            <cc:send-error id="SendError" routes-to="WSOffError4"/>
+        </cc:async-mediation>
+        <cc:workday-out-soap id="StatusWS" execute-when="vars['aggregatedXMLChunk'].length > 0 &amp;&amp; (!props['collate'] || props['lastMessageInBatch'])" routes-response-to="OffStatusVar" application="Integrations" version="31.2"/>
+        <cc:async-mediation id="OffStatusVar" routes-to="WSStatus" execute-steps-when="vars['aggregatedXMLChunk'].length > 0 &amp;&amp; (!props['collate'] || props['lastMessageInBatch'])">
+            <cc:steps>
+                <cc:eval id="Eval">
+                    <cc:expression>props['ErrorSev']=parts[0].xpath('/env:Envelope/env:Body/wd:Get_Import_Process_Messages_Response/wd:Response_Data/wd:Import_Process_Message/wd:Import_Process_Message_Data/wd:Severity')</cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:route id="WSStatus">
+            <cc:mvel-strategy>
+                <cc:choose-route expression="vars['aggregatedXMLChunk'].length == 0" route="SubRoute1"/>
+                <cc:choose-route expression="props['collate'] &amp;&amp; !props['lastMessageInBatch']" route="SubRoute0"/>
+                <cc:choose-route expression="props['ErrorSev'].length()>0" route="SubRoute"/>
+                <cc:choose-route expression="true" route="Alternate"/>
+            </cc:mvel-strategy>
+            <cc:sub-route name="Alternate" routes-to="WSOffSuccess"/>
+            <cc:sub-route name="SubRoute" routes-to="WSOffError5"/>
+            <cc:sub-route name="SubRoute0" routes-to="WSOffSuccess00"/>
+            <cc:sub-route name="SubRoute1" routes-to="WSOffSuccess00"/>
+        </cc:route>
+        <cc:async-mediation id="WSOffError5" routes-to="CallParseErrors" execute-steps-when="vars['aggregatedXMLChunk'].length > 0 &amp;&amp; (!props['collate'] || props['lastMessageInBatch'])">
+            <cc:steps>
+                <cc:xslt id="Xslt" output="message" output-mimetype="text/xml" url="OFFCYCERR.xsl"/>
+            </cc:steps>
+            <cc:send-error id="SendError" routes-to="AsyncMediationXSLT"/>
+        </cc:async-mediation>
+        <cc:async-mediation id="WSOffSuccess" execute-steps-when="vars['aggregatedXMLChunk'].length > 0 &amp;&amp; (!props['collate'] || props['lastMessageInBatch'])">
+            <cc:steps>
+                <cc:eval id="SuccessFile4">
+                    <cc:expression>props['status-log'].append(props['PrevBatchID']+','+props['PrevEmpID'] + ', Off Web service, success'+ ',' +'\n')</cc:expression>
+                    <cc:expression>props['Pass'] = props['Pass']+1</cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:async-mediation id="WSOffError4" routes-to="WSOffSuccess00" execute-steps-when="vars['aggregatedXMLChunk'].length > 0 &amp;&amp; (!props['collate'] || props['lastMessageInBatch'])">
+            <cc:steps>
+                <cc:eval id="ErrorFile4">
+                    <cc:expression>props['status-log'].append(props['PrevBatchID']+','+ props['PrevEmpID'] + ',  Off Web Service Status , Error'+ ',' +props['PrevPayEndDt']+',,,'+ context.errorMessage   + '\n')</cc:expression>
+                    <cc:expression>props['fail-count'] = props['fail-count']+1</cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:local-out id="CallCollate" store-message="none" execute-when="props['collate']" routes-response-to="CallAggregate0" endpoint="vm://INT061-JDA-Payroll-Input/Aggregate">
+            <cc:set name="batch" value="false"/>
+            <cc:set name="collate" value="true"/>
+        </cc:local-out>
+        <cc:local-out id="CallAggregate0" store-message="none" execute-when="!props['collate'] || props['lastMessageInBatch']" routes-response-to="CallGenerateWS" endpoint="vm://INT061-JDA-Payroll-Input/Aggregate">
+            <cc:set name="batch" value="true"/>
+            <cc:set name="collate" value="false"/>
+        </cc:local-out>
+        <cc:local-in id="Aggregate" routes-to="Aggregator">
+            <cc:parameter name="collate" type="boolean"/>
+            <cc:parameter name="batch" type="boolean"/>
+        </cc:local-in>
+        <cc:async-mediation id="Off_Hours00" routes-to="OffWS" execute-steps-when="vars['aggregatedXMLChunk'].length > 0 &amp;&amp; (!props['collate'] || props['lastMessageInBatch'])">
+            <cc:steps>
+                <cc:write id="Write" output-mimetype="text/xml">
+                    <cc:message>
+                        <cc:text>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;
+&lt;env:Envelope&#xD;
+    xmlns:env=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&#xD;
+    xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;>&#xD;
+    &lt;env:Body>&#xD;
+           &lt;wd:Import_Payroll_Off-cycle_Payment_Request&#xD;
+            xmlns:wd=&quot;urn:com.workday/bsvc&quot;&#xD;
+            wd:version=&quot;v31.2&quot;>&#xD;
+            &lt;wd:Payroll_Off-cycle_Payment_Data>&#xD;
+                &lt;wd:Batch_ID>@{util.cleanString( props[&quot;PrevBatchID&quot;])}&lt;/wd:Batch_ID>&#xD;
+               &lt;wd:Payment_ID>@{util.cleanString(props['PrevPayID'])}&lt;/wd:Payment_ID>&#xD;
+           &lt;wd:Employee_Reference>&#xD;
+                    &lt;wd:ID wd:type=&quot;Employee_ID&quot;>@{util.cleanString( props[&quot;PrevEmpID&quot;])}&lt;/wd:ID>&#xD;
+                &lt;/wd:Employee_Reference>&#xD;
+ &lt;wd:Payment_Date>@{util.cleanString( props[&quot;PrevPaymentDate&quot;])}&lt;/wd:Payment_Date>&#xD;
+  &#xD;
+                &lt;wd:Period_Date>@{util.cleanString( props[&quot;PrevPayEndDt&quot;])}&lt;/wd:Period_Date>&#xD;
+          &#xD;
+                       &#xD;
+                &lt;wd:Run_Category_Reference>&#xD;
+                    &lt;wd:ID wd:type=&quot;Run_Category_ID&quot;>@{util.cleanString( props[&quot;PrevCategory&quot;])}&lt;/wd:ID> &#xD;
+                &lt;/wd:Run_Category_Reference>&#xD;
+    &#xD;
+       &#xD;
+                &lt;wd:Payment_Priority>62&lt;/wd:Payment_Priority> &#xD;
+               &lt;wd:Result_Type_Reference>&#xD;
+                    &lt;wd:ID wd:type=&quot;Payroll_Off-cycle_Type_ID&quot;>OnDemandPayment&lt;/wd:ID> &#xD;
+                &lt;/wd:Result_Type_Reference>&#xD;
+                &lt;wd:Replacement>false&lt;/wd:Replacement>&#xD;
+                &lt;wd:Reason_Reference>&#xD;
+                    &lt;wd:ID wd:type=&quot;Action_Reason_ID&quot;>@{util.cleanString( props[&quot;PrevAction&quot;])}&lt;/wd:ID>&#xD;
+                    &#xD;
+         &#xD;
+                &lt;/wd:Reason_Reference>&#xD;
+                &lt;wd:On_Demand_Payment_Data>&#xD;
+                    &lt;wd:Use_Supplemental_Tax_Rate>false&lt;/wd:Use_Supplemental_Tax_Rate>&#xD;
+          &#xD;
+                    &lt;wd:Pay_to_Balance_Account>false&lt;/wd:Pay_to_Balance_Account>&#xD;
+                    &lt;wd:Take_Additional_Withholding>false&lt;/wd:Take_Additional_Withholding>&#xD;
+                    &lt;wd:Include_Retro_Differences_in_Payment>false&lt;/wd:Include_Retro_Differences_in_Payment>&#xD;
+                       @if{props[&quot;PrevAction&quot;]=='Vacation Advance'}&#xD;
+				    &lt;wd:Load_or_Refresh_Input>true&lt;/wd:Load_or_Refresh_Input>&#xD;
+                     @end{}&#xD;
+                    @if{props[&quot;PrevAction&quot;]=='Vacation/Time Off'}&#xD;
+					  &lt;wd:Load_or_Refresh_Input>true&lt;/wd:Load_or_Refresh_Input>&#xD;
+					 @end{}&#xD;
+					   @if{props[&quot;PrevAction&quot;]=='Bonus'}&#xD;
+					     &lt;wd:Load_or_Refresh_Input>false&lt;/wd:Load_or_Refresh_Input>&#xD;
+					 @end{}&#xD;
+					&#xD;
+                &lt;/wd:On_Demand_Payment_Data>&#xD;
+          	&#xD;
+          		@{vars['aggregatedXMLChunk'].text}&#xD;
+                &#xD;
+            &lt;/wd:Payroll_Off-cycle_Payment_Data>&#xD;
+        &lt;/wd:Import_Payroll_Off-cycle_Payment_Request>&#xD;
+    &lt;/env:Body>&#xD;
+&lt;/env:Envelope>&#xD;
+</cc:text>
+                    </cc:message>
+                </cc:write>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:async-mediation id="AsyncMediation" routes-to="Splitter">
+            <cc:steps>
+                <cc:eval id="Eval">
+                    <cc:expression>props['PrevEmpID']=&quot;&quot;;&#xD;
+props['PrevPayEndDt']=&quot;&quot;;&#xD;
+props['PrevCategory']=&quot;&quot;;&#xD;
+props['PrevAction']=&quot;&quot;;&#xD;
+props['PrevBatchID']=&quot;&quot;;&#xD;
+props['PrevPaymentDate']=&quot;&quot;;&#xD;
+props['PrevPayID']=&quot;&quot;;&#xD;
+vars['aggregatedXMLChunk']=&quot;&quot;;</cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:local-out id="CallCollateAfterAggregate" store-message="none" execute-when="!props['collate']" routes-response-to="CallGenerateWS0" endpoint="vm://INT061-JDA-Payroll-Input/Aggregate">
+            <cc:set name="batch" value="false"/>
+            <cc:set name="collate" value="true"/>
+        </cc:local-out>
+        <cc:async-mediation id="AsyncMediation10" routes-to="CallCollateAfterAggregate" execute-steps-when="!props['collate'] || props['lastMessageInBatch']">
+            <cc:steps>
+                <cc:copy id="Copy" output="message" output-mimetype="text/plain" input="variable" input-variable="currentXMLChunk"/>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:aggregator id="Aggregator" collate-when="props['collate']" force-batch-on-last-message="false" force-batch-when="props['batch']">
+            <cc:size-batch-strategy batch-size="-1"/>
+            <cc:message-content-collater output-mimetype="text/plain"/>
+        </cc:aggregator>
+        <cc:async-mediation id="AsyncMediation0" routes-to="AsyncMediation10">
+            <cc:steps>
+                <cc:eval id="Eval">
+                    <cc:expression>props['PrevEmpID'] = props['EmpID'];&#xD;
+props['PrevPayEndDt'] = props['PayEndDt'];&#xD;
+props['PrevCategory'] = props['Category'];&#xD;
+props['PrevAction'] = props['Action'];&#xD;
+props['PrevBatchID'] = props['BatchID'];&#xD;
+props['PrevPaymentDate'] = props['PaymentDate'];&#xD;
+props['PrevPayID'] = props['PayID'];</cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:splitter id="Splitter0">
+            <cc:sub-route name="SubRoute" routes-to="WSOffError50"/>
+            <cc:xml-stream-splitter xpath="/file/error"/>
+        </cc:splitter>
+        <cc:async-mediation id="WSOffError50">
+            <cc:steps>
+                <cc:eval id="ErrorFile5">
+                    <cc:expression>props['ErrorMsg']=parts[0].xpath('/error')</cc:expression>
+                    <cc:expression>props['status-log'].append(props['PrevBatchID'] + ',' + props['PrevEmpID'] + ',Off Web Service,Error,' + props['PrevPayEndDt'] + ',,,' + props['ErrorMsg'] + '\n')</cc:expression>
+                    <cc:expression>props['fail-count'] = props['fail-count']+1</cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:local-in id="ParseErrors" routes-to="Splitter0"/>
+        <cc:local-out id="CallParseErrors" store-message="none" execute-when="vars['aggregatedXMLChunk'].length > 0 &amp;&amp; (!props['collate'] || props['lastMessageInBatch'])" endpoint="vm://INT061-JDA-Payroll-Input/ParseErrors"/>
+        <cc:async-mediation id="AsyncMediation2" routes-to="Off_Hours00" execute-steps-when="!props['collate'] || props['lastMessageInBatch']">
+            <cc:steps>
+                <cc:copy id="Copy" output="variable" output-mimetype="text/xml" output-variable="aggregatedXMLChunk" input="message"/></cc:steps>
+        </cc:async-mediation>
+        <cc:async-mediation id="WSOffSuccess00" execute-steps-when="vars['aggregatedXMLChunk'].length > 0 &amp;&amp; (!props['collate'] || props['lastMessageInBatch'])">
+            <cc:steps>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:local-out id="CallGenerateWS" store-message="none" routes-response-to="AsyncMediation0" endpoint="vm://INT061-JDA-Payroll-Input/GenerateWS"/>
+        <cc:local-in id="GenerateWS" routes-to="AsyncMediation2"/>
+        <cc:async-mediation id="AsyncMediation3" routes-to="AsyncMediation4" execute-steps-when="props['lastMessageInBatch']">
+            <cc:steps>
+                <cc:eval id="Eval">
+                    <cc:expression>props['PrevEmpID']=&quot;&quot;;&#xD;
+props['PrevPayEndDt']=&quot;&quot;;&#xD;
+props['PrevCategory']=&quot;&quot;;&#xD;
+props['PrevAction']=&quot;&quot;;&#xD;
+props['PrevBatchID']=&quot;&quot;;&#xD;
+props['PrevPaymentDate']=&quot;&quot;;&#xD;
+props['PrevPayID']=&quot;&quot;;&#xD;
+vars['currentXMLChunk'] = &quot;&quot;;&#xD;
+vars['aggregatedXMLChunk']=&quot;&quot;;</cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:local-out id="CallGenerateWS0" store-message="none" execute-when="!props['collate'] &amp;&amp; props['lastMessageInBatch']" routes-response-to="AsyncMediation3" endpoint="vm://INT061-JDA-Payroll-Input/GenerateWS"/>
+        <cc:local-out id="CallCollate00" store-message="none" execute-when="props['lastMessageInBatch']" endpoint="vm://INT061-JDA-Payroll-Input/Aggregate">
+            <cc:set name="batch" value="true"/>
+            <cc:set name="collate" value="false"/>
+        </cc:local-out>
+        <cc:local-out id="CallCollate0" store-message="none" execute-when="props['lastMessageInBatch']" routes-response-to="CallCollate00" endpoint="vm://INT061-JDA-Payroll-Input/Aggregate">
+            <cc:set name="batch" value="true"/>
+            <cc:set name="collate" value="true"/>
+        </cc:local-out>
+        <cc:async-mediation id="AsyncMediation4" routes-to="CallCollate0" execute-steps-when="props['lastMessageInBatch']">
+            <cc:steps>
+                <cc:write id="Write" output-mimetype="text/plain">
+                    <cc:message>
+                        <cc:text>&lt;!--  --></cc:text>
+                    </cc:message>
+                </cc:write>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:async-mediation id="AsyncMediation5" routes-to="Note-Error">
+            <cc:steps>
+                <cc:write id="Write">
+                    <cc:message>
+                        <cc:text>@{props['status-log'].toString()}</cc:text>
+                    </cc:message>
+                </cc:write>
+            
+                <cc:store id="Store" output="message" createDocumentReference="true" expiresIn="P90D" title="log.csv"/>
+            </cc:steps>
+        </cc:async-mediation>
+        <cc:async-mediation id="AsyncMediationXSLT">
+            <cc:steps>
+                <cc:eval id="ErrorFileXSLT">
+                    <cc:expression>props['status-log'].append(props['StoreNum']+',N/A, Transform' + ','+ context.errorMessage   + '\n')</cc:expression>
+                    <cc:expression>props['fail-count'] = props['fail-count']+1</cc:expression>
+                </cc:eval>
+            </cc:steps>
+        </cc:async-mediation>
+      
+	</cc:assembly>
+
+</beans>
